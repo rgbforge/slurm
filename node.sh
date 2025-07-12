@@ -1,11 +1,4 @@
 #---------------------------------------------------------------
-# repo and package install
-#---------------------------------------------------------------
-dnf config-manager --set-enabled crb
-dnf install munge munge-devel pam-devel perl readline-devel dbus-devel mariadb-server mariadb-devel rpm-build
-
-
-#---------------------------------------------------------------
 # create munge key, start munge, test munge
 #---------------------------------------------------------------
 dd if=/dev/urandom bs=1 count=1024 > /etc/munge/munge.key
@@ -61,10 +54,4 @@ read varname
 systemctl enable slurmd.service
 systemctl start slurmd.service
 systemctl status slurmd.service
-
-
-
-#
-
-
 
