@@ -39,10 +39,7 @@ read varname
 #rm ctld for node
 rpm --install rpmbuild/RPMS/x86_64/*.rpm
 echo "FIX slurm.conf"
-read varname
-nano /etc/slurm/slurm.conf.example
-echo "FIX slurm.conf2"
-read varname
+read 
 
 
 #---------------------------------------------------------------
@@ -52,7 +49,7 @@ export SlurmUSER=1001
 groupadd -g $SlurmUSER slurm
 useradd  -m -c "Slurm workload manager" -d /var/lib/slurm -u $SlurmUSER -g slurm  -s /bin/bash slurm
 
----------------------------------------------------------------
+#---------------------------------------------------------------
 # create and modify slurmd log files, start slurmd
 #---------------------------------------------------------------
 #clush -bw <node-list> --copy /etc/slurm/slurm.conf --dest /etc/slurm/slurm.conf
