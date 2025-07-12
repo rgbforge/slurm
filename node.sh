@@ -32,6 +32,8 @@ echo "FIX slurm.conf part3"
 read varname
 #NodeName=test001 Boards=1 SocketsPerBoard=2 CoresPerSocket=2 ThreadsPerCore=1 RealMemory=8010 TmpDisk=32752 Feature=xeon
 #TmpFS=/scratch
+sudo firewall-cmd --permanent --add-port=6817/tcp
+sudo firewall-cmd --reload
 systemctl enable slurmd.service
 systemctl start slurmd.service
 systemctl status slurmd.service
