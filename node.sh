@@ -1,19 +1,4 @@
 #---------------------------------------------------------------
-# create munge key, start munge, test munge
-#---------------------------------------------------------------
-dd if=/dev/urandom bs=1 count=1024 > /etc/munge/munge.key
-chown munge: /etc/munge/munge.key
-chmod 400 /etc/munge/munge.key
-scp -p /etc/munge/munge.key zephyrus:/etc/munge/munge.key
-chown -R munge: /etc/munge/ /var/log/munge/
-chmod 0700 /etc/munge/ /var/log/munge/
-systemctl enable munge
-systemctl start munge
-munge -n | unmunge
-munge -n | ssh zephyrus unmunge
-
-
-#---------------------------------------------------------------
 # download slurm, rpmbuild slurm, configure slurm.conf
 #---------------------------------------------------------------
 wget https://download.schedmd.com/slurm/slurm-23.02.5.tar.bz2
@@ -24,10 +9,6 @@ echo "FIX *.RPM"
 read varname
 rpm --install rpmbuild/RPMS/x86_64/*.rpm
 echo "FIX slurm.conf"
-read varname
-nano /etc/slurm/slurm.conf.example
-echo "FIX slurm.conf2"
-read varname
 
 
 #---------------------------------------------------------------
