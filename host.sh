@@ -26,18 +26,6 @@ if [ -z "${REMOTE_USER}" ] || [ -z "${REMOTE_HOST}" ]; then
     exit 1
 fi
 
-dd if=/dev/urandom bs=1 count=1024 > /etc/munge/munge.key
-chown munge: /etc/munge/munge.key
-chmod 400 /etc/munge/munge.key
-scp -p /etc/munge/munge.key ${REMOTE_USER}@${REMOTE_HOST}:/tmp/munge.key
-ssh -t ${REMOTE_USER}@${REMOTE_HOST} 'sudo cp /tmp/munge.key /etc/munge/munge.key && sudo chown munge: /etc/munge/munge.key && sudo chmod 400 /etc/munge/munge.key && rm /tmp/munge.key'
-chown -R munge: /etc/munge/ /var/log/munge/
-chmod 0700 /etc/munge/ /var/log/munge/
-systemctl enable munge
-systemctl start munge
-munge -n | unmunge
-munge -n | ssh ${REMOTE_USER}@${REMOTE_HOST} unmunge
-
 
 #---------------------------------------------------------------
 # download slurm, rpmbuild slurm, configure slurm.conf
@@ -79,8 +67,8 @@ read varname
 #NodeName=test001 Boards=1 SocketsPerBoard=2 CoresPerSocket=2 ThreadsPerCore=1 RealMemory=8010 TmpDisk=32752 Feature=xeon
 #TmpFS=/scratch
 systemctl enable slurmd.service
-systemctl start slurmd.service
-#systemctl status slurmd.service
+systemctl restart slurmd.service
+systemctl status slurmd.service
 
 
 #---------------------------------------------------------------
@@ -93,13 +81,11 @@ touch /var/log/slurm/slurmctld.log
 chown slurm: /var/log/slurm/slurmctld.log
 touch /var/log/slurm/slurm_jobacct.log /var/spool/slurmctld/job_state /var/log/slurm/slurm_jobcomp.log /var/spool/slurmctld/trigger_state
 chown slurm: /var/log/slurm/slurm_jobacct.log /var/log/slurm/slurm_jobcomp.log /var/spool/slurmctld/trigger_state /var/spool/slurmctld/job_state
-systemctl enable slurmctld.service
-systemctl start slurmctld.service
-#systemctl status slurmctld.service
+systemctl enable --now slurmctld.service
+systemctl status slurmctld.service
 
 
 systemctl restart slurmd.service
 systemctl restart slurmdctld.service
-
-
-
+systemctl status slurmd.service
+systemctl status slurmctld.service
