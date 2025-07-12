@@ -30,7 +30,7 @@ dd if=/dev/urandom bs=1 count=1024 > /etc/munge/munge.key
 chown munge: /etc/munge/munge.key
 chmod 400 /etc/munge/munge.key
 scp -p /etc/munge/munge.key ${REMOTE_USER}@${REMOTE_HOST}:/tmp/munge.key
-ssh ${REMOTE_USER}@${REMOTE_HOST} 'sudo cp /tmp/munge.key /etc/munge/munge.key && sudo chown munge: /etc/munge/munge.key && sudo chmod 400 /etc/munge/munge.key && rm /tmp/munge.key'
+ssh -t ${REMOTE_USER}@${REMOTE_HOST} 'sudo cp /tmp/munge.key /etc/munge/munge.key && sudo chown munge: /etc/munge/munge.key && sudo chmod 400 /etc/munge/munge.key && rm /tmp/munge.key'
 chown -R munge: /etc/munge/ /var/log/munge/
 chmod 0700 /etc/munge/ /var/log/munge/
 systemctl enable munge
