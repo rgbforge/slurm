@@ -48,7 +48,8 @@ read
 export SlurmUSER=1001
 groupadd -g $SlurmUSER slurm
 useradd  -m -c "Slurm workload manager" -d /var/lib/slurm -u $SlurmUSER -g slurm  -s /bin/bash slurm
-
+sudo firewall-cmd --permanent --add-port=6817/tcp
+sudo firewall-cmd --reload
 #---------------------------------------------------------------
 # create and modify slurmd log files, start slurmd
 #---------------------------------------------------------------
