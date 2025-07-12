@@ -1,14 +1,13 @@
 #!/bin/bash
 
-OLD_CONTROLLER_HOSTNAME="freya"
+JSON_FILE=${1:-hostnodelist.json}
 
-if [ -z "$1" ]; then
-  exit 1
+if [ ! -f "$JSON_FILE" ]; then
+    exit 1
 fi
 
-SLURM_CONF_FILE=$1
-
-if [ ! -f "$SLURM_CONF_FILE" ]; then
+if ! command -v jq &> /dev/null; then
+    echo "jq not installed"
     exit 1
 fi
 
@@ -19,5 +18,8 @@ if [ -z "$NEW_HOSTNAME" ] || [ -z "$NEW_IP" ]; then
     exit 1
 fi
 
-sed -i "s/^SlurmctldHost=.*/SlurmctldHost=${NEW_HOSTNAME}(${NEW_IP})/" "$SLURM_CONF_FILE"
-sed -i "/NodeName=${OLD_CONTROLLER_HOSTNAME}/s/NodeName=${OLD_CONTROLLER_HOSTNAME}.*NodeAddr=[^ ]*/NodeName=${NEW_HOSTNAME} NodeAddr=${NEW_IP}/" "$SLURM_CONF_FILE"
+jq \
+  --arg name "$NEW_HOSTNAME" \
+  --arg ip "$NEW_IP" \
+  '(.host.name = $name) | (.host.ip = $ip) | (.nodes[0].name = $name) | (.nodes[0].ip = $ip)' \
+  "$JSON_FILE" > "${JSON_FILE}.tmp" && mv "${JSON_FILE}.tmp" "$JSON_FILE"
