@@ -1,4 +1,10 @@
+#!/bin/bash
 
+if [ -z "$1" ]; then
+  read -p "Enter target user@host: " TARGET_HOST
+else
+  TARGET_HOST=$1
+fi
 
 #---------------------------------------------------------------
 # create munge key, start munge, test munge
@@ -6,13 +12,14 @@
 dd if=/dev/urandom bs=1 count=1024 > /etc/munge/munge.key
 chown munge: /etc/munge/munge.key
 chmod 400 /etc/munge/munge.key
-scp -p /etc/munge/munge.key zephyrus:/etc/munge/munge.key
+scp -p /etc/munge/munge.key ${TARGET_HOST}:/tmp/munge.key
+ssh ${TARGET_HOST} 'sudo cp /tmp/munge.key /etc/munge/munge.key && sudo chown munge: /etc/munge/munge.key && sudo chmod 400 /etc/munge/munge.key && rm /tmp/munge.key'
 chown -R munge: /etc/munge/ /var/log/munge/
 chmod 0700 /etc/munge/ /var/log/munge/
 systemctl enable munge
 systemctl start munge
 munge -n | unmunge
-munge -n | ssh zephyrus unmunge
+munge -n | ssh ${TARGET_HOST} unmunge
 
 
 #---------------------------------------------------------------
