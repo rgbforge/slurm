@@ -25,15 +25,13 @@ sudo rm -f rpmbuild/RPMS/x86_64/slurm-torque-*
 sudo rm -f rpmbuild/RPMS/x86_64/slurm-pam-*
 sudo rpm --install --nodeps rpmbuild/RPMS/x86_64/*.rpm
 
-clush -w "$COMPUTE_NODES" "bash -c '
-sudo groupadd -g 1001 slurm
-sudo useradd -m -c \"Slurm workload manager\" -d /var/lib/slurm -u 1001 -g slurm -s /bin/bash slurm
-sudo mkdir -p /var/spool/slurmd /var/log/slurm
-sudo chown slurm: /var/spool/slurmd /var/log/slurm
-sudo chmod 755 /var/spool/slurmd /var/log/slurm
-sudo touch /var/log/slurm/slurmd.log
-sudo chown slurm: /var/log/slurm/slurmd.log
-'"
+clush -w "$COMPUTE_NODES" "sudo groupadd -g 1001 slurm"
+clush -w "$COMPUTE_NODES" "sudo useradd -m -c 'Slurm workload manager' -d /var/lib/slurm -u 1001 -g slurm -s /bin/bash slurm"
+clush -w "$COMPUTE_NODES" "sudo mkdir -p /var/spool/slurmd /var/log/slurm"
+clush -w "$COMPUTE_NODES" "sudo chown slurm: /var/spool/slurmd /var/log/slurm"
+clush -w "$COMPUTE_NODES" "sudo chmod 755 /var/spool/slurmd /var/log/slurm"
+clush -w "$COMPUTE_NODES" "sudo touch /var/log/slurm/slurmd.log"
+clush -w "$COMPUTE_NODES" "sudo chown slurm: /var/log/slurm/slurmd.log"
 
 sudo dd if=/dev/urandom of=$MUNGE_KEY_FILE bs=1 count=1024
 sudo chown munge:munge $MUNGE_KEY_FILE
